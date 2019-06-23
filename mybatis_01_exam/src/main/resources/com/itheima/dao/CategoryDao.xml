@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+1. mapper标签的 namespace  属性 , 名称空间 ,类似于java中的包
+    值 : 接口的完全限定名称
+2. 具体操作的映射 Statment
+    * 确定使用的标签 insert delete update select
+    * 确定标签的id属性值 ,取值就是接口中对应的方法名称
+    * 确定标签的参数类型 ,使用parameterType属性进行声明 ,取值就是接口方法的参数类型(可以省略不写)
+    * 确定标签的返回类型 ,使用resultType属性进行声明,  取值就是接口方法的返回类型(如果返回类型是集合,取值是集合中元素的数据类型)
+        * 增删改没有返回类型属性
+    * 确定执行的SQL语句
+-->
+<mapper namespace="com.itheima.dao.CategoryDao">
+
+    <!--查询所有分类数据 public List<Category> findAll() -->
+    <select id="findAll" resultType="category" >
+        select * from tab_category
+    </select>
+
+    <!--添加一条分类数据 public Integer add(Category category)-->
+    <insert id="add" parameterType="category">
+        <!--返回主键 -->
+        <selectKey keyProperty="cid" keyColumn="cid" order="AFTER" resultType="int">
+            select last_insert_id();
+        </selectKey>
+        insert into tab_category values (null,#{cname})
+    </insert>
+
+    <!--根据分类ID,更新分类数据 public void update(Category category); -->
+    <update id="update" parameterType="category">
+        update tab_category set cname = #{cname} where cid = #{cid}
+    </update>
+
+    <!--根据id删除分类 public void delete(Integer cid);-->
+    <delete id="delete" parameterType="java.lang.Integer">
+        delete from tab_category where cid = #{aaa}<!--单值类型(简单类型)基本数据类型 字符串类型-->
+    </delete>
+
+</mapper>

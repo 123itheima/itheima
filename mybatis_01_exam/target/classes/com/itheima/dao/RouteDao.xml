@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+1. mapper标签的 namespace  属性 , 名称空间 ,类似于java中的包
+    值 : 接口的完全限定名称
+2. 具体操作的映射 Statment
+    * 确定使用的标签 insert delete update select
+    * 确定标签的id属性值 ,取值就是接口中对应的方法名称
+    * 确定标签的参数类型 ,使用parameterType属性进行声明 ,取值就是接口方法的参数类型(可以省略不写)
+    * 确定标签的返回类型 ,使用resultType属性进行声明,  取值就是接口方法的返回类型(如果返回类型是集合,取值是集合中元素的数据类型)
+        * 增删改没有返回类型属性
+    * 确定执行的SQL语句
+-->
+<mapper namespace="com.itheima.dao.RouteDao">
+
+    <!--
+    #{属性}   OGNL表达式 ,在执行的过程中会使用?作为占位符进行替代 , SQL语句使用预编译 ,防止SQL注入漏洞
+        * 如果是单值参数 #{任意字符} ,可以使用任意字符取值
+    ${属性}   EL表达式 , 在执行之前将参数值取出,拼接到SQL语句中 , 可能会有SQL注入漏洞
+        * 如果是单值参数,${value},只能使用value取值
+    -->
+
+    <!--查询所有旅游线路 List<Route> findAll() -->
+    <select id="findAll" resultType="Route"  >
+        select * from tab_route
+    </select>
+
+    <!--根据用户输入的字符串,模糊查询线路 List<Route> findLikeName(String rname) -->
+    <select id="findLikeName" parameterType="java.lang.String" resultType="Route">
+        select * from tab_route where rname like #{rname}
+    </select>
+
+    <!--根据分类id查询线路信息 List<Route> findByCid(Integer cid); -->
+    <select id="findByCid" parameterType="int" resultType="Route">
+        <!-- select * from tab_route where cid = #{cid} -->
+        select * from tab_route where cid = ${value}
+    </select>
+
+    <!--根据线路id查询线路详情 Route findByRid(Integer rid);-->
+    <select id="findByRid" parameterType="java.lang.Integer" resultType="Route">
+        select * from tab_route where rid = #{rid}
+    </select>
+
+    <!--查询数据库中的所有线路数量 Integer findTotalCount();-->
+    <select id="findTotalCount" resultType="Integer" >
+        select count(*) from tab_route
+    </select>
+
+    <!--查询数据库中,线路名称包含rname的线路数量 Integer findTotalCount2(String rname);-->
+    <select id="findTotalCount2" parameterType="java.lang.String" resultType="Integer">
+        select count(*) from tab_route where rname like #{aaa}
+    </select>
+
+    <!--查询数据库中,查询某一个分类下的线路数量  Integer findTotalCount3(Integer cid);-->
+    <select id="findTotalCount3" parameterType="Integer" resultType="Integer">
+        select count(*) from tab_route where cid = #{cid}
+    </select>
+
+</mapper>
